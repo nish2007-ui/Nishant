@@ -16,18 +16,17 @@ st.title("Hi, I'm a Machine Learning Builder! 👋")
 st.caption("Documenting 8 weeks of coding, data, and building real projects.")
 
 # Create Navigation Tabs to organize your profile neatly
-tab1, tab2, tab3 = st.tabs(["👤 About Me", "🚀 Interactive Projects", "✉️ Get in Touch"])
+tab1, tab2, tab3 = st.tabs(["👤 About Me & Skills", "🚀 Projects Gallery", "✉️ Get in Touch"])
 
 
 # ==========================================
-# TAB 1: ABOUT ME & SKILLS
+# TAB 1: ABOUT ME & INTERACTIVE SKILLS FOLD
 # ==========================================
 with tab1:
     # Use columns to keep your profile photo/avatar next to your bio text
     col1, col2 = st.columns([1, 2], gap="large")
     
     with col1:
-        # A clean profile placeholder (you can replace this link with a photo of your choice)
         st.image("https://cdn-icons-png.flaticon.com/512/3242/3242257.png", use_container_width=True)
         
     with col2:
@@ -45,156 +44,193 @@ with tab1:
         
     st.divider()
     
-    # Skills Section
-    st.subheader("🛠️ My Tech Stack")
-    st.markdown("""
-    *   **Languages:** `Python` `SQL` `Markdown`
-    *   **Data Analysis:** `Pandas` `NumPy` `Matplotlib` `Seaborn`
-    *   **Machine Learning:** `Scikit-Learn` `PyTorch` `Streamlit`
-    *   **Developer Tools:** `Git` `GitHub` `VS Code`
-    """)
+    # INTERACTIVE FOLDING SKILLS SECTION
+    st.subheader("🛠️ My Tech Stack (Hover to Reveal!)")
+    st.write("Move your mouse over any skill to peel back the solid color and reveal the tool's visual representation!")
 
-
-# ==========================================
-# TAB 2: INTERACTIVE PROJECTS (3D HOVER CARDS)
-# ==========================================
-with tab2:
-    st.header("What I've Built")
-    st.write("Hover your mouse cursor over the cards below to fold the page and reveal the project visuals!")
-    
-    # HTML and CSS for the 3D Hover/Flip transition cards
-    hover_card_html = """
+    # CSS and HTML for the "Peel/Fold Page" effect on individual skill cards
+    skills_peel_html = """
     <style>
-    /* Container holding the cards */
-    .flip-card-container {
+    /* Grid layout for the skills */
+    .skills-grid {
       display: flex;
       justify-content: center;
-      gap: 20px;
+      gap: 15px;
       flex-wrap: wrap;
       margin-top: 20px;
       margin-bottom: 30px;
     }
 
-    /* Individual card frame size and 3D environment */
-    .flip-card {
-      background-color: transparent;
-      width: 320px;
-      height: 240px;
-      perspective: 1000px; /* Gives the 3D pop-out effect */
-    }
-
-    /* The actual box structure that rotates */
-    .flip-card-inner {
+    /* Individual skill card structure */
+    .skill-card {
       position: relative;
-      width: 100%;
-      height: 100%;
-      text-align: center;
-      transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-      transform-style: preserve-3d;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-      border-radius: 12px;
+      width: 160px;
+      height: 120px;
+      background-color: #f3f4f6;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+      cursor: pointer;
     }
 
-    /* Rotate the card Y-axis 180 degrees on hover */
-    .flip-card:hover .flip-card-inner {
-      transform: rotateY(180deg);
-    }
-
-    /* Properties shared by Front and Back elements */
-    .flip-card-front, .flip-card-back {
+    /* Underneath Layer: The Hidden Image */
+    .skill-bg-image {
       position: absolute;
+      top: 0;
+      left: 0;
       width: 100%;
       height: 100%;
-      -webkit-backface-visibility: hidden; /* Hides the back layer during spin */
-      backface-visibility: hidden;
-      border-radius: 12px;
-      padding: 20px;
-      box-sizing: border-box;
+      z-index: 1;
+    }
+    
+    .skill-bg-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
 
-    /* FRONT FACE: Colorful Gradient and Text */
-    .flip-card-front {
-      background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+    /* Top Layer: The solid color page containing the text */
+    .skill-peel-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #2563eb, #1d4ed8); /* Deep tech blue */
       color: white;
       display: flex;
-      flex-direction: column;
       justify-content: center;
       align-items: center;
-    }
-
-    .flip-card-front h3 {
-      margin: 0 0 10px 0;
+      font-weight: bold;
+      font-size: 18px;
       font-family: sans-serif;
-      font-size: 20px;
+      letter-spacing: 0.5px;
+      z-index: 2;
+      
+      /* Smooth slide and fold transition */
+      transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s ease;
+      transform-origin: top left; /* Folds upwards and leftwards */
     }
 
-    .flip-card-front p {
-      font-size: 14px;
-      opacity: 0.9;
-      margin: 0;
+    /* The actual hover effect: Peels up and slides away */
+    .skill-card:hover .skill-peel-layer {
+      transform: rotate(-15deg) translate(-100%, -100%);
+      opacity: 0;
     }
 
-    /* BACK FACE: Image Reveal */
-    .flip-card-back {
-      background-color: #f3f4f6;
-      transform: rotateY(180deg); /* Facing backward initially */
-      overflow: hidden;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 0;
+    /* Little corner fold shadow effect on hover */
+    .skill-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 0;
+      background: rgba(255, 255, 255, 0.4);
+      z-index: 3;
+      transition: width 0.4s, height 0.4s;
     }
-
-    .flip-card-back img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover; /* Crops image to fill card cleanly */
+    
+    .skill-card:hover::after {
+      width: 30px;
+      height: 30px;
+      box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
     }
     </style>
 
-    <div class="flip-card-container">
+    <div class="skills-grid">
 
-      <!-- CARD 1: DATA ANALYSIS -->
-      <div class="flip-card">
-        <div class="flip-card-inner">
-          <div class="flip-card-front">
-            <h3>📊 Data Analysis</h3>
-            <p>Interactive sales analysis & cleaning pipeline built in Python.</p>
-          </div>
-          <div class="flip-card-back">
-            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=500&q=80" alt="Data Chart">
-          </div>
+      <!-- SKILL 1: PYTHON -->
+      <div class="skill-card">
+        <div class="skill-bg-image">
+          <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=200&q=80" alt="Python Code">
+        </div>
+        <div class="skill-peel-layer">
+          Python 🐍
         </div>
       </div>
 
-      <!-- CARD 2: DIFFUSION MODELS -->
-      <div class="flip-card">
-        <div class="flip-card-inner">
-          <div class="flip-card-front">
-            <h3>🧠 Diffusion Models</h3>
-            <p>Exploring mathematics behind step-by-step image synthesis.</p>
-          </div>
-          <div class="flip-card-back">
-            <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=500&q=80" alt="AI Abstract Art">
-          </div>
+      <!-- SKILL 2: SQL -->
+      <div class="skill-card">
+        <div class="skill-bg-image">
+          <img src="https://images.unsplash.com/photo-1544383835-bda2bc66a55d?auto=format&fit=crop&w=200&q=80" alt="Database Storage">
+        </div>
+        <div class="skill-peel-layer">
+          SQL 🗄️
+        </div>
+      </div>
+
+      <!-- SKILL 3: PANDAS -->
+      <div class="skill-card">
+        <div class="skill-bg-image">
+          <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=200&q=80" alt="Data Sheet Dashboard">
+        </div>
+        <div class="skill-peel-layer">
+          Pandas 🐼
+        </div>
+      </div>
+
+      <!-- SKILL 4: PYTORCH -->
+      <div class="skill-card">
+        <div class="skill-bg-image">
+          <img src="https://images.unsplash.com/photo-1507668077129-56e32842fceb?auto=format&fit=crop&w=200&q=80" alt="Artificial Neural Network concept">
+        </div>
+        <div class="skill-peel-layer">
+          PyTorch 🔥
         </div>
       </div>
 
     </div>
     """
     
-    # Injecting the HTML & CSS securely
-    st.markdown(hover_card_html, unsafe_allow_html=True)
+    # Injecting the folding skills into the layout
+    st.markdown(skills_peel_html, unsafe_allow_html=True)
 
 
 # ==========================================
-# TAB 3: CONTACT FORM (FULLY INDENT-CORRECTED)
+# TAB 2: PROJECTS GALLERY
+# ==========================================
+with tab2:
+    st.header("Projects Showroom")
+    st.write("A deep dive into some of the primary projects I constructed from scratch:")
+    
+    # Project Card 1
+    with st.container(border=True):
+        st.subheader("Project 1: Data Analysis Dashboard")
+        st.write(
+            "An interactive dashboard that cleans and analyzes large datasets, "
+            "showing key business metrics using Pandas and Seaborn."
+        )
+        p1_col1, p1_col2 = st.columns([1, 1])
+        with p1_col1:
+            st.markdown("[💻 GitHub Repository](https://github.com/)")
+        with p1_col2:
+            st.markdown("`Pandas` `Seaborn` `Streamlit`")
+
+    st.write("") # Spacer
+    
+    # Project Card 2
+    with st.container(border=True):
+        st.subheader("Project 2: Machine Learning Predictor")
+        st.write(
+            "Built a Scikit-Learn regression model to predict housing prices. "
+            "Analyzed feature correlation and optimized hyperparameters."
+        )
+        p2_col1, p2_col2 = st.columns([1, 1])
+        with p2_col1:
+            st.markdown("[💻 GitHub Repository](https://github.com/)")
+        with p2_col2:
+            st.markdown("`Scikit-Learn` `Feature Engineering`")
+
+
+# ==========================================
+# TAB 3: CONTACT FORM
 # ==========================================
 with tab3:
     st.header("Let's Connect!")
     st.write("Feel free to reach out to me for collaboration or questions.")
     
-    # Python Form Container
+    # Form Container
     with st.form("contact_form", clear_on_submit=True):
         name = st.text_input("Name")
         email = st.text_input("Email")
@@ -202,10 +238,8 @@ with tab3:
         
         submit_button = st.form_submit_button("Send Message")
         
-        # Perfect, corrected indentation block
         if submit_button:
             if name and email and message:
                 st.success(f"Thanks {name}! Your message was successfully recorded!")
             else:
-                st.warning("Please fill out all fields!")
                 st.warning("Please fill out all fields!")
