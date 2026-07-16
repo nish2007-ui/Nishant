@@ -1,340 +1,335 @@
 import streamlit as st
 
-# ==========================================
-# 1. PAGE SETUP & CONFIGURATION
-# ==========================================
+# ============================================================
+# PAGE CONFIG
+# ============================================================
 st.set_page_config(
-    page_title="My Portfolio | Space Mission", 
-    page_icon="🚀", 
-    layout="centered"
+    page_title="Nishant — Profile",
+    page_icon="⚙️",
+    layout="wide",
+    initial_sidebar_state="collapsed",
 )
 
-# ==========================================
-# 2. FULL-PAGE INTERACTIVE SPACE BACKGROUND & MOUSE-TRACKING ROCKET
-# ==========================================
-# This HTML block injects a global space theme and tracks mouse movement to fly the rocket
-space_theme_html = """
-<style>
-/* 1. Target the entire Streamlit main container to make it transparent */
-.stApp {
-    background-color: #03030c !important; /* Deep dark space background */
-    color: #f0f4f8 !important;
-}
+# ============================================================
+# ---- EDIT THESE VALUES ----
+# ============================================================
+NAME = "Nishant"
 
-/* 2. Global background container for moving stars */
-#space-bg {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-image: 
-        radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 40px),
-        radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 30px),
-        radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 40px);
-    background-size: 550px 550px, 350px 350px, 250px 250px;
-    background-position: 0 0, 40px 60px, 130px 270px;
-    z-index: -10;
-    transition: background-position 0.2s ease-out, background-size 0.2s ease-out;
-}
+BIO = (
+    "I'm a student at IIT Bombay who likes building tech-related things and "
+    "learning how they work under the hood. Right now I'm deep into machine "
+    "learning — I find it fascinating how a machine can learn to predict "
+    "decisions from data instead of being told exactly what to do."
+)
 
-/* 3. The floating rocket at the bottom */
-#rocket-ship {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 50px;
-    z-index: 100;
-    pointer-events: none; /* Allows user to click buttons behind the rocket */
-    transition: transform 0.1s ease-out, bottom 0.2s ease-out;
-    filter: drop-shadow(0 0 10px rgba(255,255,255,0.2));
-}
+# Photo: point this at a raw GitHub URL once you've pushed the image to your repo.
+# Example: if your repo is github.com/yourname/portfolio and the file is
+# assets/photo.jpg on the main branch, the raw URL is:
+# https://raw.githubusercontent.com/yourname/portfolio/main/assets/photo.jpg
+PHOTO_URL = "https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/assets/photo.jpg"
 
-/* 4. Flame exhaust effect on the rocket */
-#rocket-ship::after {
-    content: "⚡";
-    position: absolute;
-    bottom: -25px;
-    left: 12px;
-    font-size: 20px;
-    transform: rotate(180deg);
-    opacity: 0;
-    transition: opacity 0.2s ease, transform 0.1s linear;
-}
+CITY = ""              # TODO: add your city
+STUDENT_STATUS = ""    # TODO: e.g. "Undergraduate, IIT Bombay" or "2nd Year B.Tech"
 
-/* Active flight class added by JavaScript when mouse moves low */
-.rocket-boosting::after {
-    opacity: 1 !important;
-}
+# Skills: (name, confidence out of 100)
+SKILLS = [
+    ("Python", 85),
+    ("C++", 65),
+    ("Fusion 360", 60),
+    ("Scikit-learn", 75),
+    ("PyTorch", 70),
+    ("Matplotlib", 75),
+    ("Pandas", 80),
+]
 
-/* Make Streamlit text clean and readable against the dark background */
-h1, h2, h3, p, span, li {
-    color: #e2e8f0 !important;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-}
+# Projects: (name, one-line description, tech used, link or "")
+PROJECTS = [
+    (
+        "Diffusion Model on CelebA",
+        "Implemented the forward noising process and verified the closed-form Gaussian marginal numerically.",
+        "PyTorch, Torchvision, KaggleHub",
+        "",  # TODO: add your repo link, e.g. "https://github.com/you/diffusion-celeba"
+    ),
+    (
+        "Face VAE",
+        "Built a convolutional variational autoencoder to encode and reconstruct face images into a latent space.",
+        "PyTorch, NumPy, Matplotlib",
+        "",  # TODO: add link
+    ),
+    (
+        "ML Fundamentals Mini-Projects",
+        "A set of course assignments covering regression, classification, and model evaluation from scratch.",
+        "Python, Scikit-learn, Pandas",
+        "",  # TODO: add link
+    ),
+]
 
-/* Make Streamlit tabs look great in dark mode */
-.stTabs [data-baseweb="tab-list"] {
-    background-color: rgba(255, 255, 255, 0.05) !important;
-    border-radius: 8px;
-    padding: 5px;
-}
-.stTabs [data-baseweb="tab"] {
-    color: #94a3b8 !important;
-}
-.stTabs [aria-selected="true"] {
-    color: #3b82f6 !important;
-    font-weight: bold !important;
-}
-</style>
+# Contact links: (label, url)
+CONTACT_LINKS = [
+    ("GitHub", "https://github.com/YOUR_USERNAME"),
+    ("LinkedIn", "https://linkedin.com/in/YOUR_USERNAME"),
+    ("Email", "mailto:your.email@example.com"),
+]
 
-<!-- Background elements in DOM -->
-<div id="space-bg"></div>
-<div id="rocket-ship">🚀</div>
-
-<!-- Interactive JavaScript to track cursor and drive background zoom + rocket engine -->
-<script>
-const spaceBg = document.getElementById('space-bg');
-const rocket = document.getElementById('rocket-ship');
-
-document.addEventListener('mousemove', (e) => {
-    const screenHeight = window.innerHeight;
-    const screenWidth = window.innerWidth;
-    const mouseY = e.clientY;
-    const mouseX = e.clientX;
-
-    // Calculate how close the mouse is to the bottom of the screen (0 to 1)
-    const closenessToBottom = mouseY / screenHeight;
-    
-    // 1. Move background faster downwards to simulate speed zoom
-    const bgOffset = closenessToBottom * 150;
-    spaceBg.style.backgroundPosition = `0px ${bgOffset}px, 40px ${bgOffset * 1.5}px, 130px ${bgOffset * 2}px`;
-    
-    // 2. Adjust rocket tilt slightly towards the cursor on X-axis
-    const tilt = ((mouseX / screenWidth) - 0.5) * 30; // Max tilt 15 degrees
-    rocket.style.transform = `translateX(-50%) rotate(${tilt}deg)`;
-
-    // 3. If cursor is in the lower 40% of the screen, ignite thrusters!
-    if (closenessToBottom > 0.6) {
-        rocket.classList.add('rocket-boosting');
-        // Push rocket slightly up as it gets closer
-        rocket.style.bottom = `${20 + (closenessToBottom * 15)}px`;
-    } else {
-        rocket.classList.remove('rocket-boosting');
-        rocket.style.bottom = '20px';
-    }
-});
-</script>
-"""
-
-# Inject the space engine into the app
-st.markdown(space_theme_html, unsafe_allow_html=True)
-
-
-# ==========================================
-# 3. HERO HEADER SECTION
-# ==========================================
-st.title("Hi, I'm a Machine Learning Builder! 👋")
-st.caption("Documenting my coding trajectory, core theories, and physical deployments.")
-
-# Create Navigation Tabs to organize your profile neatly
-tab1, tab2, tab3 = st.tabs(["👤 About Me & Skills", "🚀 Projects Gallery", "✉️ Get in Touch"])
-
-
-# ==========================================
-# TAB 1: ABOUT ME & INTERACTIVE SKILLS FOLD
-# ==========================================
-with tab1:
-    col1, col2 = st.columns([1, 2], gap="large")
-    
-    with col1:
-        st.image("https://cdn-icons-png.flaticon.com/512/3242/3242257.png", use_container_width=True)
-        
-    with col2:
-        st.subheader("My Mission Control")
-        st.write(
-            """
-            Over the past 8 weeks, I have transitioned from basic syntax to designing machine learning pipelines.
-            I focus heavily on **conceptual frameworks**—like mathematical shortcuts in diffusion models 
-            or multi-dimensional tensor processing—so I can architect real solutions.
-            """
-        )
-        
-    st.divider()
-    
-    # INTERACTIVE FOLDING SKILLS SECTION
-    st.subheader("🛠️ My Tech Stack (Hover to Reveal!)")
-    st.write("Move your mouse over any skill to peel back the cover and reveal the engine underneath!")
-
-    # CSS and HTML for the "Peel/Fold Page" effect on individual skill cards
-    skills_peel_html = """
-    <style>
-    /* Grid layout for the skills */
-    .skills-grid {
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-      flex-wrap: wrap;
-      margin-top: 20px;
-      margin-bottom: 30px;
-    }
-
-    /* Individual skill card structure */
-    .skill-card {
-      position: relative;
-      width: 160px;
-      height: 120px;
-      background-color: #111827;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-      cursor: pointer;
-    }
-
-    /* Underneath Layer: The Hidden Image */
-    .skill-bg-image {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 1;
-    }
-    
-    .skill-bg-image img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    /* Top Layer: The solid blue cover page containing the text */
-    .skill-peel-layer {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(135deg, #2563eb, #1d4ed8);
-      color: white !important;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-weight: bold;
-      font-size: 18px;
-      font-family: sans-serif;
-      z-index: 2;
-      transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s ease;
-      transform-origin: top left;
-    }
-
-    /* Hover effect: Peels up and slides away */
-    .skill-card:hover .skill-peel-layer {
-      transform: rotate(-15deg) translate(-100%, -100%);
-      opacity: 0;
-    }
-    </style>
-
-    <div class="skills-grid">
-
-      <!-- SKILL 1: PYTHON -->
-      <div class="skill-card">
-        <div class="skill-bg-image">
-          <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=200&q=80" alt="Python Code">
-        </div>
-        <div class="skill-peel-layer">
-          Python 🐍
-        </div>
-      </div>
-
-      <!-- SKILL 2: SQL -->
-      <div class="skill-card">
-        <div class="skill-bg-image">
-          <img src="https://images.unsplash.com/photo-1544383835-bda2bc66a55d?auto=format&fit=crop&w=200&q=80" alt="Database">
-        </div>
-        <div class="skill-peel-layer">
-          SQL 🗄️
-        </div>
-      </div>
-
-      <!-- SKILL 3: PANDAS -->
-      <div class="skill-card">
-        <div class="skill-bg-image">
-          <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=200&q=80" alt="Data Sheet">
-        </div>
-        <div class="skill-peel-layer">
-          Pandas 🐼
-        </div>
-      </div>
-
-      <!-- SKILL 4: PYTORCH -->
-      <div class="skill-card">
-        <div class="skill-bg-image">
-          <img src="https://images.unsplash.com/photo-1507668077129-56e32842fceb?auto=format&fit=crop&w=200&q=80" alt="Neural Network">
-        </div>
-        <div class="skill-peel-layer">
-          PyTorch 🔥
-        </div>
-      </div>
-
-    </div>
+# ============================================================
+# STYLES — blueprint / schematic theme
+# ============================================================
+st.markdown(
     """
-    st.markdown(skills_peel_html, unsafe_allow_html=True)
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0A1929;
+            --panel: #0F2438;
+            --line: rgba(125, 211, 232, 0.14);
+            --grid: rgba(125, 211, 232, 0.05);
+            --cyan: #7DD3E8;
+            --amber: #E8A23D;
+            --paper: #EAF2F8;
+            --slate: #8FA5B8;
+        }
 
+        .stApp {
+            background-color: var(--bg);
+            background-image:
+                linear-gradient(var(--grid) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+            background-size: 32px 32px;
+        }
 
-# ==========================================
-# TAB 2: PROJECTS GALLERY
-# ==========================================
-with tab2:
-    st.header("Active Payloads")
-    st.write("Here is the cargo of systems I've put together during this sprint:")
-    
-    # Project 1 Container
-    with st.container(border=True):
-        st.subheader("Project 1: Data Analytics Platform")
-        st.write(
-            "An interactive program analyzing dataset anomalies, using Pandas workflows to clean, "
-            "re-index, and transform data for business decisions."
+        html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
+
+        h1, h2, h3 { font-family: 'Space Grotesk', sans-serif !important; color: var(--paper) !important; }
+
+        .mono { font-family: 'JetBrains Mono', monospace; }
+
+        /* --- Fig labels for each section --- */
+        .fig-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.78rem;
+            letter-spacing: 0.12em;
+            color: var(--cyan);
+            text-transform: uppercase;
+            margin-bottom: 0.2rem;
+        }
+        .section-rule {
+            border: none;
+            border-top: 1px solid var(--line);
+            margin: 0.4rem 0 1.6rem 0;
+        }
+
+        /* --- Hero --- */
+        .hero-name {
+            font-size: 3.2rem;
+            font-weight: 700;
+            line-height: 1.05;
+            margin: 0;
+        }
+        .hero-meta {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--slate);
+            font-size: 0.92rem;
+            margin-top: 0.6rem;
+        }
+        .hero-meta span.tag {
+            border: 1px solid var(--line);
+            padding: 3px 10px;
+            border-radius: 3px;
+            margin-right: 8px;
+            display: inline-block;
+            margin-top: 6px;
+        }
+        .bio-box {
+            border-left: 2px solid var(--cyan);
+            padding-left: 1rem;
+            margin-top: 1.2rem;
+            color: var(--paper);
+            font-size: 1.02rem;
+            line-height: 1.65;
+        }
+
+        /* --- Photo: specimen-frame treatment --- */
+        [data-testid="stImage"] {
+            position: relative;
+            padding: 10px;
+            border: 1px solid var(--cyan);
+            background: var(--panel);
+        }
+        [data-testid="stImage"] img { display: block; width: 100%; }
+        .specimen-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            color: var(--cyan);
+            letter-spacing: 0.1em;
+            margin-top: 0.5rem;
+            text-align: center;
+        }
+
+        /* --- Skill gauges --- */
+        .skill-row { margin-bottom: 1.1rem; }
+        .skill-top {
+            display: flex;
+            justify-content: space-between;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--paper);
+            margin-bottom: 4px;
+        }
+        .skill-top .pct { color: var(--amber); }
+
+        .stProgress > div > div > div > div {
+            background: linear-gradient(90deg, var(--cyan), var(--amber));
+        }
+        .stProgress > div > div > div {
+            background-color: rgba(143, 165, 184, 0.15);
+        }
+
+        /* --- Project cards --- */
+        .project-card {
+            border: 1px solid var(--line);
+            background: var(--panel);
+            padding: 1.3rem 1.4rem;
+            border-radius: 4px;
+            height: 100%;
+            margin-bottom: 1rem;
+        }
+        .project-name {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            font-size: 1.15rem;
+            color: var(--paper);
+            margin-bottom: 0.35rem;
+        }
+        .project-desc {
+            color: var(--slate);
+            font-size: 0.92rem;
+            line-height: 1.5;
+            margin-bottom: 0.6rem;
+        }
+        .project-tech {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--cyan);
+            margin-bottom: 0.8rem;
+        }
+
+        /* --- Buttons (st.link_button) --- */
+        .stLinkButton a {
+            background-color: transparent !important;
+            border: 1px solid var(--cyan) !important;
+            color: var(--cyan) !important;
+            font-family: 'JetBrains Mono', monospace !important;
+            font-size: 0.82rem !important;
+            border-radius: 3px !important;
+        }
+        .stLinkButton a:hover {
+            background-color: var(--cyan) !important;
+            color: var(--bg) !important;
+        }
+
+        footer, #MainMenu { visibility: hidden; }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+# ============================================================
+# HERO SECTION
+# ============================================================
+col_photo, col_text = st.columns([1, 2], gap="large")
+
+with col_photo:
+    st.image(PHOTO_URL, use_container_width=True)
+    st.markdown('<div class="specimen-tag">FIG. 00 — SUBJECT</div>', unsafe_allow_html=True)
+
+with col_text:
+    st.markdown('<div class="fig-label">PROFILE</div>', unsafe_allow_html=True)
+    st.markdown(f'<h1 class="hero-name">{NAME}</h1>', unsafe_allow_html=True)
+
+    city_display = CITY if CITY else "City — add yours"
+    status_display = STUDENT_STATUS if STUDENT_STATUS else "Status — add yours"
+    st.markdown(
+        f"""
+        <div class="hero-meta">
+            <span class="tag">📍 {city_display}</span>
+            <span class="tag">🎓 {status_display}</span>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    st.markdown(f'<div class="bio-box">{BIO}</div>', unsafe_allow_html=True)
+
+st.markdown('<hr class="section-rule">', unsafe_allow_html=True)
+
+# ============================================================
+# SKILLS SECTION
+# ============================================================
+st.markdown('<div class="fig-label">FIG. 01 — SKILLS</div>', unsafe_allow_html=True)
+st.markdown('<h2>Technical skills</h2>', unsafe_allow_html=True)
+
+skill_cols = st.columns(2, gap="large")
+for i, (skill, level) in enumerate(SKILLS):
+    with skill_cols[i % 2]:
+        st.markdown(
+            f"""
+            <div class="skill-row">
+                <div class="skill-top">
+                    <span>{skill}</span>
+                    <span class="pct">{level}%</span>
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
         )
-        p1_col1, p1_col2 = st.columns([1, 1])
-        with p1_col1:
-            st.markdown("[💻 GitHub Repository](https://github.com/)")
-        with p1_col2:
-            st.markdown("`Pandas` `Seaborn` `Streamlit`")
+        st.progress(level / 100)
 
-    st.write("") 
-    
-    # Project 2 Container
-    with st.container(border=True):
-        st.subheader("Project 2: Supervised ML Predictor")
-        st.write(
-            "Constructed a Scikit-Learn regression framework evaluating variable interactions and coefficients "
-            "to perform accurate continuous predictions."
+st.markdown('<hr class="section-rule">', unsafe_allow_html=True)
+
+# ============================================================
+# PROJECTS SECTION
+# ============================================================
+st.markdown('<div class="fig-label">FIG. 02 — PROJECTS</div>', unsafe_allow_html=True)
+st.markdown('<h2>Selected work</h2>', unsafe_allow_html=True)
+
+proj_cols = st.columns(len(PROJECTS), gap="medium")
+for col, (pname, pdesc, ptech, plink) in zip(proj_cols, PROJECTS):
+    with col:
+        st.markdown(
+            f"""
+            <div class="project-card">
+                <div class="project-name">{pname}</div>
+                <div class="project-desc">{pdesc}</div>
+                <div class="project-tech">{ptech}</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
         )
-        p2_col1, p2_col2 = st.columns([1, 1])
-        with p2_col1:
-            st.markdown("[💻 GitHub Repository](https://github.com/)")
-        with p2_col2:
-            st.markdown("`Scikit-Learn` `Feature Engineering`")
+        if plink:
+            st.link_button("View project ↗", plink, use_container_width=True)
+        else:
+            st.button("Link coming soon", disabled=True, use_container_width=True, key=f"disabled_{pname}")
 
+st.markdown('<hr class="section-rule">', unsafe_allow_html=True)
 
-# ==========================================
-# TAB 3: CONTACT FORM
-# ==========================================
-with tab3:
-    st.header("Transmission Channel")
-    st.write("Send an electronic signal to establish contact.")
-    
-    with st.form("contact_form", clear_on_submit=True):
-        name = st.text_input("Name")
-        email = st.text_input("Email")
-        message = st.text_area("Message")
-        
-        submit_button = st.form_submit_button("Launch Message")
-        
-        if submit_button:
-            if name and email and message:
-                st.success(f"Transmission successful, {name}! Connection coordinates logged.")
-            else:
-                st.warning("All input registers must be filled before launching!")
+# ============================================================
+# CONTACT SECTION
+# ============================================================
+st.markdown('<div class="fig-label">FIG. 03 — CONTACT</div>', unsafe_allow_html=True)
+st.markdown('<h2>Get in touch</h2>', unsafe_allow_html=True)
+
+contact_cols = st.columns(len(CONTACT_LINKS))
+for col, (label, url) in zip(contact_cols, CONTACT_LINKS):
+    with col:
+        st.link_button(label, url, use_container_width=True)
+
+st.markdown(
+    """
+    <div style="margin-top: 2.5rem; text-align: center; color: var(--slate);
+                font-family: 'JetBrains Mono', monospace; font-size: 0.75rem;">
+        BUILT WITH STREAMLIT · 8-WEEK ML PORTFOLIO
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
