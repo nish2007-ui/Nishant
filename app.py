@@ -1,8 +1,6 @@
 import streamlit as st
 
-# ============================================================
-# PAGE CONFIG
-# ============================================================
+
 st.set_page_config(
     page_title="Nishant — Profile",
     page_icon="⚙️",
@@ -10,9 +8,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-# ============================================================
-# ---- EDIT THESE VALUES ----
-# ============================================================
+
 NAME = "Nishant"
 
 BIO = (
@@ -22,16 +18,12 @@ BIO = (
     "decisions from data instead of being told exactly what to do."
 )
 
-# Photo: point this at a raw GitHub URL once you've pushed the image to your repo.
-# Example: if your repo is github.com/yourname/portfolio and the file is
-# assets/photo.jpg on the main branch, the raw URL is:
-# https://raw.githubusercontent.com/yourname/portfolio/main/assets/photo.jpg
+
 PHOTO_URL = "https://raw.githubusercontent.com/nish2007-ui/Nishant/portfolio/paasport.jpg"
 
-CITY = "Gondia"              # TODO: add your city
-STUDENT_STATUS = "2nd year,UNdergradute,IIt Bombay"    # TODO: e.g. "Undergraduate, IIT Bombay" or "2nd Year B.Tech"
+CITY = "Gondia"            
+STUDENT_STATUS = "2nd year,UNdergradute,IIt Bombay"   
 
-# Skills: (name, confidence out of 100)
 SKILLS = [
     ("Python", 75),
     ("C++", 65),
@@ -42,38 +34,36 @@ SKILLS = [
     ("Pandas", 80),
 ]
 
-# Projects: (name, one-line description, tech used, link or "")
+
 PROJECTS = [
     (
         "Mushroom detection",
         "Implemented by using two different  model one desicion tree and random forest  ",
         "scikit-learn, matplotlib, pandas",
-        "",  # TODO: add your repo link, e.g. "https://github.com/you/diffusion-celeba"
+        "", 
     ),
     (
         "Leaderboard of cafe",
         "I made leaderboard of cafe on basis of players who scored the highest averge score etc we made that by cleaning dataset .",
         "python,pandas",
-        "",  # TODO: add link
+        "", 
     ),
     (
         "Diabetes detecter",
         "I made a project on how can we make estimation of diabetes by make desicion tree to detect is the person have diabetes",
         "Python, Scikit-learn, Pandas,Matplotlib",
-        "",  # TODO: add link
+        "", 
     ),
 ]
 
-# Contact links: (label, url)
+
 CONTACT_LINKS = [
     ("GitHub", "https://github.com/nish2007-ui"),
     ("LinkedIn", "https://www.linkedin.com/in/nishant-patel-44049936a"),
     ("Email", "mailto:patelnishant9423@gmail.com"),
 ]
 
-# ============================================================
-# STYLES — blueprint / schematic theme
-# ============================================================
+
 st.markdown(
     """
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -234,9 +224,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# ============================================================
-# HERO SECTION
-# ============================================================
+
 col_photo, col_text = st.columns([1, 2], gap="large")
 
 with col_photo:
@@ -247,8 +235,8 @@ with col_text:
     st.markdown('<div class="fig-label">PROFILE</div>', unsafe_allow_html=True)
     st.markdown(f'<h1 class="hero-name">{NAME}</h1>', unsafe_allow_html=True)
 
-    city_display = CITY if CITY else "City — add yours"
-    status_display = STUDENT_STATUS if STUDENT_STATUS else "Status — add yours"
+    city_display = CITY
+    status_display = STUDENT_STATUS 
     st.markdown(
         f"""
         <div class="hero-meta">
@@ -263,9 +251,7 @@ with col_text:
 
 st.markdown('<hr class="section-rule">', unsafe_allow_html=True)
 
-# ============================================================
-# SKILLS SECTION
-# ============================================================
+
 st.markdown('<div class="fig-label">FIG. 01 — SKILLS</div>', unsafe_allow_html=True)
 st.markdown('<h2>Technical skills</h2>', unsafe_allow_html=True)
 
@@ -287,9 +273,6 @@ for i, (skill, level) in enumerate(SKILLS):
 
 st.markdown('<hr class="section-rule">', unsafe_allow_html=True)
 
-# ============================================================
-# PROJECTS SECTION
-# ============================================================
 st.markdown('<div class="fig-label">FIG. 02 — PROJECTS</div>', unsafe_allow_html=True)
 st.markdown('<h2>Selected work</h2>', unsafe_allow_html=True)
 
@@ -311,9 +294,7 @@ for col, (pname, pdesc, ptech, plink) in zip(proj_cols, PROJECTS):
 
 st.markdown('<hr class="section-rule">', unsafe_allow_html=True)
 
-# ============================================================
-# CONTACT SECTION
-# ============================================================
+
 st.markdown('<div class="fig-label">FIG. 03 — CONTACT</div>', unsafe_allow_html=True)
 st.markdown('<h2>Get in touch</h2>', unsafe_allow_html=True)
 
