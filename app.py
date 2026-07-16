@@ -66,9 +66,9 @@ PROJECTS = [
 
 # Contact links: (label, url)
 CONTACT_LINKS = [
-    ("GitHub", "https://github.com/YOUR_USERNAME"),
-    ("LinkedIn", "https://linkedin.com/in/YOUR_USERNAME"),
-    ("Email", "mailto:your.email@example.com"),
+    ("GitHub", "https://github.com/nish2007-ui"),
+    ("LinkedIn", "https://www.linkedin.com/in/nishant-patel-44049936a"),
+    ("Email", "mailto:patelnishant9423@gmail.com"),
 ]
 
 # ============================================================
