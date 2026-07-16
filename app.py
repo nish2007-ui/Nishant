@@ -33,33 +33,33 @@ STUDENT_STATUS = ""    # TODO: e.g. "Undergraduate, IIT Bombay" or "2nd Year B.T
 
 # Skills: (name, confidence out of 100)
 SKILLS = [
-    ("Python", 85),
+    ("Python", 75),
     ("C++", 65),
-    ("Fusion 360", 60),
-    ("Scikit-learn", 75),
-    ("PyTorch", 70),
-    ("Matplotlib", 75),
+    ("Fusion 360", 50),
+    ("Scikit-learn", 60),
+    ("PyTorch", 60),
+    ("Matplotlib", 40),
     ("Pandas", 80),
 ]
 
 # Projects: (name, one-line description, tech used, link or "")
 PROJECTS = [
     (
-        "Diffusion Model on CelebA",
-        "Implemented the forward noising process and verified the closed-form Gaussian marginal numerically.",
-        "PyTorch, Torchvision, KaggleHub",
+        "Mushroom detection",
+        "Implemented by using two different  model one desicion tree and random forest  ",
+        "scikit-learn, matplotlib, pandas",
         "",  # TODO: add your repo link, e.g. "https://github.com/you/diffusion-celeba"
     ),
     (
-        "Face VAE",
-        "Built a convolutional variational autoencoder to encode and reconstruct face images into a latent space.",
-        "PyTorch, NumPy, Matplotlib",
+        "Leaderboard of cafe",
+        "I made leaderboard of cafe on basis of players who scored the highest averge score etc we made that by cleaning dataset .",
+        "python,pandas",
         "",  # TODO: add link
     ),
     (
-        "ML Fundamentals Mini-Projects",
-        "A set of course assignments covering regression, classification, and model evaluation from scratch.",
-        "Python, Scikit-learn, Pandas",
+        "Diabetes detecter",
+        "I made a project on how can we make estimation of diabetes by make desicion tree to detect is the person have diabetes",
+        "Python, Scikit-learn, Pandas,Matplotlib",
         "",  # TODO: add link
     ),
 ]
