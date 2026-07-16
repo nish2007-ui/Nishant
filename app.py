@@ -28,8 +28,8 @@ BIO = (
 # https://raw.githubusercontent.com/yourname/portfolio/main/assets/photo.jpg
 PHOTO_URL = "https://raw.githubusercontent.com/nish2007-ui/Nishant/portfolio/paasport.jpg"
 
-CITY = ""              # TODO: add your city
-STUDENT_STATUS = ""    # TODO: e.g. "Undergraduate, IIT Bombay" or "2nd Year B.Tech"
+CITY = "Gondia"              # TODO: add your city
+STUDENT_STATUS = "2nd year,UNdergradute,IIt Bombay"    # TODO: e.g. "Undergraduate, IIT Bombay" or "2nd Year B.Tech"
 
 # Skills: (name, confidence out of 100)
 SKILLS = [
