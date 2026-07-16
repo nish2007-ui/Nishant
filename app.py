@@ -308,8 +308,6 @@ for col, (pname, pdesc, ptech, plink) in zip(proj_cols, PROJECTS):
         )
         if plink:
             st.link_button("View project ↗", plink, use_container_width=True)
-        else:
-            st.button("Link coming soon", disabled=True, use_container_width=True, key=f"disabled_{pname}")
 
 st.markdown('<hr class="section-rule">', unsafe_allow_html=True)
 
