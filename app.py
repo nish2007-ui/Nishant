@@ -26,7 +26,7 @@ BIO = (
 # Example: if your repo is github.com/yourname/portfolio and the file is
 # assets/photo.jpg on the main branch, the raw URL is:
 # https://raw.githubusercontent.com/yourname/portfolio/main/assets/photo.jpg
-PHOTO_URL = "https://drive.google.com/file/d/1RWUoT47XjV_bid7pMZBGXje0C4w_kjyg/view?usp=sharing"
+PHOTO_URL = "https://github.com/nish2007-ui/Nishant/blob/b4100989dd4012c14cdc596fad7ce94a1d2a0269/paasport.jpg"
 
 CITY = ""              # TODO: add your city
 STUDENT_STATUS = ""    # TODO: e.g. "Undergraduate, IIT Bombay" or "2nd Year B.Tech"
